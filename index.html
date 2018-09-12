@@ -56,7 +56,7 @@
     });
 
     //When the user clicks on a button, the page should grab 10 static, non-animated gif images from the GIPHY API and place them on the page.
-    $("button").on("click", function() {
+    $(document).on("click", "button", function () {
       
       //Clearing gifs content in HTML 
       $("#gifs-appear-here").empty();
