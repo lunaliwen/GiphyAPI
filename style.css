@@ -1,0 +1,11 @@
+#data-animal{
+    margin: 10px;
+    background-color: rgb(255, 238, 0);
+    width: 80px;
+    height: 35px;
+}
+
+#submit {
+    color: blue;
+    font-style: bold;
+}

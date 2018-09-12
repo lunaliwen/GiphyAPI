@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Animal Buttons</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+   <div id = "keywords"></div>
+  <div id = " addAnimal">
+        <h3>Add an animal:</h3>
+      <div>
+           
+            <input type="text" >
+      </div>
+      <br>
+      <h3 id = "submit">Submit</h3>
+  </div>
+  <div id="gifs-appear-here">
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+   $( document ).ready(function() {
+    //create an array of strings, each one related to a topic that interests you. Save it to a variable called topics.
+    var topics = ["cat", "dog", "fox"];
+
+      //Your app should take the topics in this array and create buttons in your HTML.
+    //Try using a loop that appends a button for each string in the array.
+    for (i = 0; i < topics.length; i++) {
+        var animalButton= $("<button>");
+        animalButton.text(topics[i]);
+        animalButton.attr("id","data-animal");
+        $("#keywords").append(animalButton);
+    }
+
+     //Add a form to your page takes the value from a user input box and adds it into your topics array.
+    // Then make a function call that takes each topic in the array remakes the buttons on the page.
+
+    $("#submit").on("click", function() {
+        var newAnimal = $("input:text").val().trim();
+        console.log(newAnimal);
+
+        topics.push(newAnimal);
+        console.log(topics);
+
+        var newButton= $("<button>");
+        newButton.text(newAnimal);
+
+        newButton.attr("id","data-animal");
+        $("#keywords").append(newButton);
+    
+    });
+
+    //When the user clicks on a button, the page should grab 10 static, non-animated gif images from the GIPHY API and place them on the page.
+    $("button").on("click", function() {
+      
+      //Clearing gifs content in HTML 
+      $("#gifs-appear-here").empty();
+
+      //Grabbing and storing the text value from the button
+      var animal = $(this).text();
+      console.log(animal);
+
+      //Conctructing a queryURL using the animal name
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        animal + "&api_key=dc6zaTOxFJmzC&limit=10";
+
+      //Performing an AJAX request with the queryURL
+      $.ajax({
+          url: queryURL,
+          method: "GET"
+      })
+
+      //After data comes back from the request
+      .then(function(response) {
+          console.log(queryURL);
+          console.log(response);
+
+          //Storing the data from the AJAX request in the results variable
+          var results = response.data;
+
+          //Looping through each result item
+          for (var j =0; j < results.length; j++) {
+
+              //Creating and storing a div tag
+              var animalDiv = $("<div>");
+
+              //Creating a paragraph tag with the result item's rating
+              var p = $("<p>").text("Rating: " + results[j].rating);
+
+              //Creating and storing an image tag
+              var animalImage = $("<img>");
+              //Setting the src attribute of the image to a property pulled off the result item
+              animalImage.attr("src", results[j].images.fixed_height_still.url);
+              animalImage.attr("data-state", "still");
+              animalImage.attr("data-animate",  results[j].images.fixed_height.url);
+              animalImage.attr("data-still", results[j].images.fixed_height_still.url);
+              //Appending the paragraph and image tag to the animalDiv
+              animalDiv.append(p);
+              animalDiv.append(animalImage);
+
+              //Appending the animalDiv to the HTML page
+              $("#gifs-appear-here").append(animalDiv);
+          }
+      });
+
+    });
+
+    //When the user clicks one of the still GIPHY images, the gif should animate. 
+    //If the user clicks the gif again, it should stop playing.
+    $(document).on("click", "img", function(){
+       //Get the value of attribute on our HTML element
+       var state = $(this).attr("data-state");
+      // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+      // Then, set the image's data-state to animate
+      // Else set src to the data-still value
+       if (state === "still") {
+           $(this).attr("src", $(this).attr("data-animate"));
+           $(this).attr("data-state", "animate");
+       }
+       else {
+           $(this).attr("src", $(this).attr("data-still"));
+           $(this).attr("data-state", "still");
+       }
+    });
+
+
+   
+
+
+  });
+
+    </script>
+    </body>
+    </html>
